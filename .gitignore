@@ -1,0 +1,36 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Data — never commit raw EEG (large files, ~2GB per subject)
+# data/raw/ is a symlink to /Volumes/Josh G/eeg-speech-data/raw — never tracked
+data/raw
+data/interim/
+data/processed/
+data/features/
+
+# Model outputs
+outputs/models/
+outputs/results/
+
+# Figures — regeneratable from notebooks
+outputs/figures/
+
+# Vendor reference repos (reference only, not our code)
+vendor/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# uv lock — track if you want reproducible installs; ignore if not
+# uv.lock
+
+# macOS
+.DS_Store

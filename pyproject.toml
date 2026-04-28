@@ -1,0 +1,45 @@
+[project]
+name = "eeg-speech"
+version = "0.1.0"
+description = "EEG imagined speech decoding — personal BCI research pipeline"
+requires-python = ">=3.11"
+dependencies = [
+    # EEG signal processing core
+    "mne>=1.8.0",
+    # Data loading
+    "mat73>=0.60",
+    "h5py>=3.10",
+    # Preprocessing
+    "pyprep>=0.4.3",
+    "mne-icalabel>=0.6",
+    "autoreject>=0.4.3",
+    # ML baseline
+    "scikit-learn>=1.3",
+    # Deep learning
+    "torch>=2.1",
+    "braindecode>=0.8",
+    # Wavelet features
+    "PyWavelets>=1.4",
+    # Data/viz
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "pandas>=2.0",
+    "matplotlib>=3.8",
+    "seaborn>=0.13",
+    # Audio export (side quest)
+    "soundfile>=0.12",
+    # Experiment tracking
+    "pyyaml>=6.0",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.0",
+    "jupyter>=1.0",
+    "jupyterlab>=4.0",
+    "ruff>=0.4",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
