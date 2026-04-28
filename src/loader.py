@@ -137,9 +137,15 @@ def load_subject(
 
 
 def _load_raw(subject_dir: Path, verbose: bool = False) -> mne.io.BaseRaw:
+    # Some subjects (e.g. MM05) have .set at top level; others (e.g. MM08) have it
+    # only inside set_files/. Check both.
     set_files = list(subject_dir.glob("*.set"))
     if not set_files:
-        raise FileNotFoundError(f"No .set file found in {subject_dir}")
+        set_files = list((subject_dir / "set_files").glob("*.set"))
+    if not set_files:
+        raise FileNotFoundError(
+            f"No .set file found in {subject_dir} or {subject_dir}/set_files/"
+        )
     set_file = str(set_files[0])
     raw = mne.io.read_raw_eeglab(set_file, montage_units="mm", preload=True, verbose=verbose)
     return raw
@@ -253,7 +259,12 @@ def get_subject_dir(subject: str, raw_data_dir: str | Path = "data/raw") -> Path
 
 def list_available_subjects(raw_data_dir: str | Path = "data/raw") -> list[str]:
     raw_data_dir = Path(raw_data_dir)
-    return sorted([
-        s for s in SUBJECTS
-        if (raw_data_dir / s).exists() and list((raw_data_dir / s).glob("*.set"))
-    ])
+    available = []
+    for s in SUBJECTS:
+        sd = raw_data_dir / s
+        if not sd.exists():
+            continue
+        # .set may be at top level (MM05) or in set_files/ (MM08)
+        if list(sd.glob("*.set")) or list((sd / "set_files").glob("*.set")):
+            available.append(s)
+    return sorted(available)
