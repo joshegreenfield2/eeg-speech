@@ -64,40 +64,53 @@ NON_EEG_CHANNELS = {
 EpochType = Literal["thinking", "speaking", "clearing", "stimuli"]
 
 
-def load_subject(
+def load_raw_continuous(
     subject: str,
     raw_data_dir: str | Path = "data/raw",
-    epoch_type: EpochType = "thinking",
+    drop_non_eeg: bool = True,
     verbose: bool = False,
-) -> tuple[mne.EpochsArray, np.ndarray]:
-    """Load one subject's imagined speech epochs from KaraOne.
+) -> mne.io.BaseRaw:
+    """Load one subject's continuous EEG (mne.Raw), optionally dropping non-EEG channels.
 
-    Returns:
-        epochs: mne.EpochsArray, shape (n_trials, n_eeg_channels, n_times)
-        labels: np.ndarray of str, shape (n_trials,) — word/phoneme strings
+    This is the input to preprocessing — filter, ICA, and re-reference must run on
+    continuous data, BEFORE epoch slicing.
     """
     raw_data_dir = Path(raw_data_dir)
     subject_dir = raw_data_dir / subject
-
     if not subject_dir.exists():
         raise FileNotFoundError(
             f"Subject directory not found: {subject_dir}\n"
             f"Run scripts/download_karaone.py first."
         )
 
-    # 1. Load raw EEG from EEGLAB .set file
     raw = _load_raw(subject_dir, verbose=verbose)
+    if drop_non_eeg:
+        raw = _drop_non_eeg(raw, verbose=verbose)
+    return raw
 
-    # 2. Drop non-EEG channels (EMG/Kinect, mastoids, EKG)
-    raw = _drop_non_eeg(raw, verbose=verbose)
 
-    # 3. Load trial indices and labels
-    epoch_inds, labels = _load_epoch_info(subject_dir, subject)
+def load_epoch_info(
+    subject: str,
+    raw_data_dir: str | Path = "data/raw",
+) -> tuple[dict, np.ndarray]:
+    """Load trial indices (epoch_inds.mat) and labels (kinect_data/labels.txt)."""
+    raw_data_dir = Path(raw_data_dir)
+    subject_dir = raw_data_dir / subject
+    return _load_epoch_info(subject_dir, subject)
 
-    # 4. Slice raw data into trial windows
+
+def slice_into_epochs(
+    raw: mne.io.BaseRaw,
+    epoch_inds: dict,
+    labels: np.ndarray,
+    epoch_type: EpochType = "thinking",
+    verbose: bool = False,
+) -> tuple[mne.EpochsArray, np.ndarray]:
+    """Slice a continuous mne.Raw into fixed-length trial epochs using KaraOne indices."""
     sfreq = raw.info["sfreq"]
     n_times = int(TRIAL_MS * sfreq / 1000)
-    raw_data = raw.get_data() * 1e6  # convert V → µV
+    # Keep data in V (MNE's SI convention). Plotting code multiplies by 1e6 for µV display.
+    raw_data = raw.get_data()
 
     inds_key = f"{epoch_type}_inds"
     if inds_key not in epoch_inds:
@@ -107,30 +120,42 @@ def load_subject(
         )
 
     trial_inds = epoch_inds[inds_key]
-
-    # Handle "stimuli" (every other speaking index, as in the reference code)
     if epoch_type == "stimuli":
         trial_inds = epoch_inds["speaking_inds"][0::2]
 
     epoched_data, trial_labels = _slice_epochs(
         raw_data, trial_inds, labels, n_times, epoch_type, verbose=verbose
     )
-
-    # 5. Build MNE EpochsArray with events
     events, event_id = _build_events(trial_labels, trial_inds, epoch_type, epoch_inds)
 
-    info = raw.info.copy()
     epochs = mne.EpochsArray(
         epoched_data,
-        info=info,
+        info=raw.info.copy(),
         events=events,
         event_id=event_id,
         tmin=0.0,
         verbose=verbose,
     )
+    return epochs, trial_labels
+
+
+def load_subject(
+    subject: str,
+    raw_data_dir: str | Path = "data/raw",
+    epoch_type: EpochType = "thinking",
+    verbose: bool = False,
+) -> tuple[mne.EpochsArray, np.ndarray]:
+    """Load one subject's imagined speech epochs from KaraOne (no preprocessing).
+
+    Convenience wrapper: load_raw_continuous → slice_into_epochs.
+    For preprocessed data, use src.preprocessor.preprocess_subject instead.
+    """
+    raw = load_raw_continuous(subject, raw_data_dir=raw_data_dir, verbose=verbose)
+    epoch_inds, labels = load_epoch_info(subject, raw_data_dir=raw_data_dir)
+    epochs, trial_labels = slice_into_epochs(raw, epoch_inds, labels, epoch_type=epoch_type, verbose=verbose)
 
     if verbose:
-        print(f"\n{subject} [{epoch_type}]: {epoched_data.shape} — "
+        print(f"\n{subject} [{epoch_type}]: {epochs.get_data().shape} — "
               f"{dict(zip(*np.unique(trial_labels, return_counts=True)))}")
 
     return epochs, trial_labels
