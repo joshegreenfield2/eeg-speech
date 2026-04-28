@@ -17,10 +17,20 @@ data/features/
 
 # Model outputs
 outputs/models/
+
+# Per-run JSONs are regeneratable, but keep the aggregate summary
 outputs/results/
+!outputs/results/*/
+!outputs/results/*/_batch_summary.json
 
 # Figures — regeneratable from notebooks
 outputs/figures/
+
+# Audio side-quest — large WAVs, regeneratable via src/audio_export.py
+outputs/audio/
+
+# Batch logs — large + noisy; the JSON summaries above are the canonical record
+outputs/batch_*.log
 
 # Vendor reference repos (reference only, not our code)
 vendor/
