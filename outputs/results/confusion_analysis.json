@@ -1,0 +1,265 @@
+{
+  "n_eegnet_runs": 13,
+  "n_svm_runs": 14,
+  "classes": [
+    "/diy/",
+    "/iy/",
+    "/m/",
+    "/n/",
+    "/piy/",
+    "/tiy/",
+    "/uw/",
+    "gnaw",
+    "knew",
+    "pat",
+    "pot"
+  ],
+  "eegnet_per_class_accuracy": [
+    {
+      "class": "/m/",
+      "accuracy": 0.19545454545454546
+    },
+    {
+      "class": "/iy/",
+      "accuracy": 0.18278388278388283
+    },
+    {
+      "class": "/n/",
+      "accuracy": 0.16643356643356647
+    },
+    {
+      "class": "gnaw",
+      "accuracy": 0.1611222111222111
+    },
+    {
+      "class": "knew",
+      "accuracy": 0.15004995004995003
+    },
+    {
+      "class": "pat",
+      "accuracy": 0.1482184482184482
+    },
+    {
+      "class": "/uw/",
+      "accuracy": 0.14816849816849817
+    },
+    {
+      "class": "pot",
+      "accuracy": 0.1455128205128205
+    },
+    {
+      "class": "/diy/",
+      "accuracy": 0.13782051282051283
+    },
+    {
+      "class": "/tiy/",
+      "accuracy": 0.13736263736263735
+    },
+    {
+      "class": "/piy/",
+      "accuracy": 0.1065989565989566
+    }
+  ],
+  "svm_per_class_accuracy": [
+    {
+      "class": "gnaw",
+      "accuracy": 0.24898732220160794
+    },
+    {
+      "class": "pat",
+      "accuracy": 0.19148113790970936
+    },
+    {
+      "class": "knew",
+      "accuracy": 0.18726035868893012
+    },
+    {
+      "class": "pot",
+      "accuracy": 0.17950937950937954
+    },
+    {
+      "class": "/n/",
+      "accuracy": 0.17276334776334776
+    },
+    {
+      "class": "/iy/",
+      "accuracy": 0.17006802721088435
+    },
+    {
+      "class": "/tiy/",
+      "accuracy": 0.16904761904761906
+    },
+    {
+      "class": "/m/",
+      "accuracy": 0.16650432900432902
+    },
+    {
+      "class": "/diy/",
+      "accuracy": 0.15654761904761907
+    },
+    {
+      "class": "/uw/",
+      "accuracy": 0.12295918367346939
+    },
+    {
+      "class": "/piy/",
+      "accuracy": 0.10790816326530613
+    }
+  ],
+  "eegnet_top_confusions": [
+    {
+      "true": "pat",
+      "predicted": "pot",
+      "fraction": 0.2174991674991675
+    },
+    {
+      "true": "gnaw",
+      "predicted": "pat",
+      "fraction": 0.19340659340659344
+    },
+    {
+      "true": "/iy/",
+      "predicted": "/piy/",
+      "fraction": 0.14829059829059826
+    },
+    {
+      "true": "pat",
+      "predicted": "gnaw",
+      "fraction": 0.14567099567099567
+    },
+    {
+      "true": "/uw/",
+      "predicted": "/iy/",
+      "fraction": 0.14267399267399267
+    },
+    {
+      "true": "/piy/",
+      "predicted": "/n/",
+      "fraction": 0.13253968253968254
+    },
+    {
+      "true": "knew",
+      "predicted": "/m/",
+      "fraction": 0.12909590409590407
+    },
+    {
+      "true": "pot",
+      "predicted": "/iy/",
+      "fraction": 0.12836052836052836
+    },
+    {
+      "true": "/tiy/",
+      "predicted": "/iy/",
+      "fraction": 0.12753912753912752
+    },
+    {
+      "true": "knew",
+      "predicted": "pot",
+      "fraction": 0.1266233766233766
+    }
+  ],
+  "svm_top_confusions": [
+    {
+      "true": "pot",
+      "predicted": "pat",
+      "fraction": 0.29224386724386725
+    },
+    {
+      "true": "knew",
+      "predicted": "pat",
+      "fraction": 0.2550530818387961
+    },
+    {
+      "true": "gnaw",
+      "predicted": "knew",
+      "fraction": 0.24782776747062463
+    },
+    {
+      "true": "pat",
+      "predicted": "knew",
+      "fraction": 0.22685528756957327
+    },
+    {
+      "true": "knew",
+      "predicted": "gnaw",
+      "fraction": 0.2082379921665636
+    },
+    {
+      "true": "pat",
+      "predicted": "pot",
+      "fraction": 0.20380333951762525
+    },
+    {
+      "true": "pot",
+      "predicted": "gnaw",
+      "fraction": 0.20216450216450219
+    },
+    {
+      "true": "pat",
+      "predicted": "gnaw",
+      "fraction": 0.20035559678416817
+    },
+    {
+      "true": "/tiy/",
+      "predicted": "/n/",
+      "fraction": 0.19454236239950526
+    },
+    {
+      "true": "gnaw",
+      "predicted": "pot",
+      "fraction": 0.18838126159554733
+    }
+  ],
+  "eegnet_linguistic_groupings": [
+    {
+      "grouping": "kind",
+      "same_group_confusion_rate": 24.017171987235635,
+      "diff_group_confusion_rate": 75.98282801276437,
+      "interpretation": "Of all errors, 24.0% land within the same kind, 76.0% across \u2014 chance for a uniform mistake distribution depends on group sizes (see below).",
+      "chance_pct_if_uniform": 20.0,
+      "above_chance_by": 4.017171987235635
+    },
+    {
+      "grouping": "place",
+      "same_group_confusion_rate": 29.429343149753805,
+      "diff_group_confusion_rate": 70.5706568502462,
+      "interpretation": "Of all errors, 29.4% land within the same place, 70.6% across \u2014 chance for a uniform mistake distribution depends on group sizes (see below).",
+      "chance_pct_if_uniform": 29.09090909090909,
+      "above_chance_by": 0.3384340588447152
+    },
+    {
+      "grouping": "voiced",
+      "same_group_confusion_rate": 47.35819474407855,
+      "diff_group_confusion_rate": 52.64180525592145,
+      "interpretation": "Of all errors, 47.4% land within the same voiced, 52.6% across \u2014 chance for a uniform mistake distribution depends on group sizes (see below).",
+      "chance_pct_if_uniform": 49.09090909090909,
+      "above_chance_by": -1.7327143468305408
+    }
+  ],
+  "svm_linguistic_groupings": [
+    {
+      "grouping": "kind",
+      "same_group_confusion_rate": 38.99715188515389,
+      "diff_group_confusion_rate": 61.00284811484611,
+      "interpretation": "Of all errors, 39.0% land within the same kind, 61.0% across \u2014 chance for a uniform mistake distribution depends on group sizes (see below).",
+      "chance_pct_if_uniform": 20.0,
+      "above_chance_by": 18.99715188515389
+    },
+    {
+      "grouping": "place",
+      "same_group_confusion_rate": 27.78227618808851,
+      "diff_group_confusion_rate": 72.2177238119115,
+      "interpretation": "Of all errors, 27.8% land within the same place, 72.2% across \u2014 chance for a uniform mistake distribution depends on group sizes (see below).",
+      "chance_pct_if_uniform": 29.09090909090909,
+      "above_chance_by": -1.3086329028205803
+    },
+    {
+      "grouping": "voiced",
+      "same_group_confusion_rate": 47.47085820634264,
+      "diff_group_confusion_rate": 52.52914179365736,
+      "interpretation": "Of all errors, 47.5% land within the same voiced, 52.5% across \u2014 chance for a uniform mistake distribution depends on group sizes (see below).",
+      "chance_pct_if_uniform": 49.09090909090909,
+      "above_chance_by": -1.620050884566453
+    }
+  ]
+}
