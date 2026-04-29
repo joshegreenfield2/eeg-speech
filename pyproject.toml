@@ -40,6 +40,26 @@ dev = [
     "ruff>=0.4",
 ]
 
+[tool.uv]
+# Intel Mac (x86_64): PyTorch dropped these wheels after 2.2.x; use pytorch's CPU index
+override-dependencies = [
+    # Intel Mac: PyTorch dropped x86_64 wheels after 2.2.x; braindecode>=0.8.2 added torchaudio dep which has same problem
+    "torch==2.2.2 ; sys_platform == 'darwin' and platform_machine == 'x86_64'",
+    "braindecode==0.8.1 ; sys_platform == 'darwin' and platform_machine == 'x86_64'",
+    # torch 2.2.2 was compiled against NumPy 1.x; NumPy 2.x breaks torch.from_numpy()
+    "numpy<2 ; sys_platform == 'darwin' and platform_machine == 'x86_64'",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", marker = "sys_platform == 'darwin' and platform_machine == 'x86_64'" },
+]
+
 [tool.ruff]
 line-length = 100
 target-version = "py311"

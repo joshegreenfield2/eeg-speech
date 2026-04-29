@@ -144,6 +144,7 @@ def cross_val_train(
     lr: float = 1e-3,
     random_state: int = 42,
     verbose: bool = False,
+    device: str | None = None,
 ) -> CVResult:
     """StratifiedKFold deep-learning CV — same protocol as the SVM baseline.
 
@@ -156,8 +157,17 @@ def cross_val_train(
     n_channels = X.shape[1]
     n_times = X.shape[2]
 
+    # Auto-detect device if not specified — picks CUDA on Colab, MPS on ARM Mac, else CPU
+    if device is None:
+        if torch.cuda.is_available():
+            device = "cuda"
+        elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+            device = "mps"
+        else:
+            device = "cpu"
+
     if verbose:
-        print(f"  [{subject}/{model_name}] X={tuple(X.shape)}, n_classes={n_classes}, n_channels={n_channels}")
+        print(f"  [{subject}/{model_name}] X={tuple(X.shape)}, n_classes={n_classes}, n_channels={n_channels}, device={device}")
 
     skf = StratifiedKFold(n_splits=cv_splits, shuffle=True, random_state=random_state)
 
@@ -180,13 +190,14 @@ def cross_val_train(
 
         model, hist = train_one_fold(
             model, X_train, y_train_t, X_val, y_val_t,
-            epochs_max=epochs_max, batch_size=batch_size, lr=lr, verbose=False,
+            epochs_max=epochs_max, batch_size=batch_size, lr=lr,
+            device=device, verbose=False,
         )
         histories.append(hist)
 
         model.eval()
         with torch.no_grad():
-            preds = model(X_val).argmax(dim=1).numpy()
+            preds = model(X_val.to(device)).argmax(dim=1).cpu().numpy()
         y_val_np = y_val_t.numpy()
         acc = accuracy_score(y_val_np, preds)
         bal = balanced_accuracy_score(y_val_np, preds)
