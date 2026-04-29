@@ -52,6 +52,9 @@ def load_runs(
     out_dir = Path(out_dir)
     rows = []
     for f in out_dir.glob(pattern):
+        # Skip aggregate/index files (e.g. _batch_summary.json) — they don't have per-run schema
+        if f.name.startswith("_"):
+            continue
         try:
             data = json.loads(f.read_text())
             rows.append({
